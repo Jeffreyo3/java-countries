@@ -49,8 +49,44 @@ public class CountryController {
         List<Country> countryList = new ArrayList<>();
         countryid.findAll().iterator().forEachRemaining(countryList::add);
 
-        List<Country> returnList = findCountries(countryList, (e) -> Character.toLowerCase(e.getName().charAt(0)) == Character.toLowerCase(var));
+        List<Country> returnList = findCountries(countryList, (c) -> Character.toLowerCase(c.getName().charAt(0)) == Character.toLowerCase(var));
         return new ResponseEntity<>(returnList, HttpStatus.OK);
     }
 
+    // http://localhost:2019/population/total
+    @GetMapping(value = "/population/total", produces = {"application/json"})
+    public ResponseEntity<?> listPopulation()
+    {
+        long total = 0;
+        List<Country> countryList = new ArrayList<>();
+        countryid.findAll().iterator().forEachRemaining(countryList::add);
+
+        for (Country c:countryList )
+        {
+            total = total + c.getPopulation();
+        }
+        return new ResponseEntity<>(("The total population is: " + total), HttpStatus.OK);
+    }
+
+    // http://localhost:2019/population/min
+    @GetMapping(value = "/population/min", produces = {"application/json"})
+    public ResponseEntity<?> listMinPopulation()
+    {
+        List<Country> countryList = new ArrayList<>();
+        countryid.findAll().iterator().forEachRemaining(countryList::add);
+
+        countryList.sort((c1, c2) -> ((int) c1.getPopulation() - (int) c2.getPopulation()));
+        return new ResponseEntity<>(countryList.get(0), HttpStatus.OK);
+    }
+
+    // http://localhost:2019/population/max
+    @GetMapping(value = "/population/max", produces = {"application/json"})
+    public ResponseEntity<?> listMaxPopulation()
+    {
+        List<Country> countryList = new ArrayList<>();
+        countryid.findAll().iterator().forEachRemaining(countryList::add);
+
+        countryList.sort((c1, c2) -> ((int) c2.getPopulation() - (int) c1.getPopulation()));
+        return new ResponseEntity<>(countryList.get(0), HttpStatus.OK);
+    }
 }
