@@ -89,4 +89,25 @@ public class CountryController {
         countryList.sort((c1, c2) -> ((int) c2.getPopulation() - (int) c1.getPopulation()));
         return new ResponseEntity<>(countryList.get(0), HttpStatus.OK);
     }
+
+    // http://localhost:2019/population/median
+    @GetMapping(value = "/population/median", produces = {"application/json"})
+    public ResponseEntity<?> listMedianPopulation()
+    {
+        List<Country> countryList = new ArrayList<>();
+        countryid.findAll().iterator().forEachRemaining(countryList::add);
+
+        int length = countryList.size();
+        if (length % 2 == 0) // even
+        {
+            return new ResponseEntity<>(countryList.get(length/2), HttpStatus.OK);
+        } else { // odd
+            int middle1 = (int) (length/2 + .5);
+            int middle2 = (int) (length/2 - .5);
+            List <Country> middleTwoCountries = new ArrayList<>();
+            middleTwoCountries.add(countryList.get(middle1));
+            middleTwoCountries.add(countryList.get(middle2));
+            return new ResponseEntity<>(middleTwoCountries, HttpStatus.OK);
+        }
+    }
 }
